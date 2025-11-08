@@ -38,9 +38,13 @@ public class Control {
         try {
             // First, create a new XMLInputFactory
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            
             // Setup a new eventReader
             InputStream in = new FileInputStream(filename);
-            XMLEventReader eventReader = inputFactory.createXMLEventReader(in, "ISO-8859-6");
+            //XMLEventReader eventReader = inputFactory.createXMLEventReader(in, "ISO-8859-6");            
+            //FIXED: filter invalid XML characters
+            FilteredInputStream fin = new FilteredInputStream(in);
+            XMLEventReader eventReader = inputFactory.createXMLEventReader(fin);
             
             int c = 0;
             debug.progressBar.setIndeterminate(true);
@@ -53,6 +57,7 @@ public class Control {
             
             eventReader.close();
             in.close();
+            fin.close();
             
             Races = new ArrayList<String>();
             
@@ -60,7 +65,10 @@ public class Control {
             debug.progressBar.setMaximum(c);
             
             in = new FileInputStream(filename);
-            eventReader = inputFactory.createXMLEventReader(in, "ISO-8859-6");
+            //eventReader = inputFactory.createXMLEventReader(in, "ISO-8859-6");            
+            //FIXED: filter invalid XML characters
+            fin = new FilteredInputStream(in);
+            eventReader = inputFactory.createXMLEventReader(fin);
             
             // read the XML document
             Dwarf dwarf = null;
